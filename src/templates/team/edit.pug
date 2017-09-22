@@ -22,19 +22,23 @@ block content
           div.field
             label.label(for='logo') Logo:
             p.control
-              input.input(id='logo' type='url' name='logo' placeholder='Logo' value=(team ? team.logo : ''))
+              input.input(id='logo' type='url' name='logo' placeholder='Logo URL' value=(team ? team.logo : ''))
           div.field
             label.label(for='seed') Seed:
             p.control
-              input.input(id='seed' type='number' name='seed' placeholder='Seed' min='0' value=(team ? team.seed : '') required)
+              if user && user.isAdmin
+                input.input(id='seed' type='number' name='seed' placeholder='Seed' min='0' value=(team ? team.seed : '') required)
+              else
+                input.input(id='seed' type='number' name='seed' placeholder='Seed' min='0' value=(team ? team.seed : '') required readOnly)
           div.field
-            p.control
-              label.checkbox
-                if team && team.disbanded
-                  input(id='disbanded' type='checkbox' name='disbanded' checked)
-                else
-                  input(id='disbanded' type='checkbox' name='disbanded')
-                span &nbsp;Disbanded?
+            if user && user.isAdmin
+              p.control
+                label.checkbox
+                  if team && team.disbanded
+                    input(id='disbanded' type='checkbox' name='disbanded' checked)
+                  else
+                    input(id='disbanded' type='checkbox' name='disbanded')
+                  span &nbsp;Disbanded?
           div.field.is-grouped
             p.control
               button.button.is-primary Submit

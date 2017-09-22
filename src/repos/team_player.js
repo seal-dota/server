@@ -144,6 +144,46 @@ function getRoster(db, team_id) {
   })
 }
 
+function getTeamCaptain(db, team_id) {
+  var select = sql`
+  SELECT
+    player.id,
+    steam_user.steam_id,
+    COALESCE(profile.name, steam_user.name) AS name,
+    steam_user.avatar,
+    steam_user.solo_mmr,
+    steam_user.party_mmr,
+    CASE
+      WHEN profile.adjusted_mmr IS NOT NULL AND profile.adjusted_mmr > 0
+      THEN profile.adjusted_mmr
+      ELSE GREATEST(steam_user.solo_mmr, steam_user.party_mmr)
+    END AS adjusted_mmr,
+    team_player.is_captain
+  FROM
+    team
+  JOIN team_player ON
+    team.id = team_player.team_id
+  JOIN player ON
+    team_player.player_id = player.id
+  JOIN steam_user ON
+    player.steam_id = steam_user.steam_id
+  LEFT JOIN profile ON
+    steam_user.steam_id = profile.steam_id
+  WHERE
+    team.id = ${team_id}
+  AND
+    team_player.is_captain = true
+  ORDER BY
+    adjusted_mmr DESC,
+    steam_user.solo_mmr DESC,
+    steam_user.party_mmr DESC,
+    steam_user.name ASC
+  `
+  return db.query(select).then(result => {
+    return result.rows
+  })
+}
+
 function isCaptainAutoApproved(db, steam_id) {
   var select = sql`
   SELECT
@@ -194,6 +234,7 @@ module.exports = db => {
     removePlayerFromTeam: removePlayerFromTeam.bind(null, db),
     getPlayerTeams: getPlayerTeams.bind(null, db),
     getRoster: getRoster.bind(null, db),
+    getTeamCaptain: getTeamCaptain.bind(null, db),
     isCaptainAutoApproved: isCaptainAutoApproved.bind(null, db),
     hasPlayed: hasPlayed.bind(null, db)
   }

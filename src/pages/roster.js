@@ -1,6 +1,7 @@
 function list(templates, season, team, team_player, series, req, res) {
   var season_id = req.params.season_id
   var team_id = req.params.team_id
+  var is_team_captain = false
 
   season.getSeason(season_id).then(season => {
     return team.getTeam(team_id).then(team => {
@@ -9,6 +10,9 @@ function list(templates, season, team, team_player, series, req, res) {
           var captain = players.filter(player => {
             return player.is_captain
           })[0]
+          if (captain.steam_id == req.user.steamId) {
+            is_team_captain = true
+          }
           players = players.filter(player => {
             return !captain || player.id != captain.id
           })
@@ -35,7 +39,8 @@ function list(templates, season, team, team_player, series, req, res) {
             team: team,
             captain: captain,
             players: players,
-            series: series
+            series: series,
+            is_team_captain: is_team_captain
           })
 
           res.send(html)

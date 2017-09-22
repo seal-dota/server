@@ -55,7 +55,7 @@ var profilePages = require('./pages/profile')(
 var seasonPages = require('./pages/seasons')(templates, season)
 var seriesPages = require('./pages/series')(
   templates, season, team, series, pairings)
-var teamPages = require('./pages/teams')(templates, season, team)
+var teamPages = require('./pages/teams')(templates, season, team, team_player)
 var registrationPages = require('./pages/registration')(
   templates, season, steam_user, team_player, player, mmr, profile)
 var rosterPages = require('./pages/roster')(

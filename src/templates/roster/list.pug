@@ -73,11 +73,12 @@ block content
                     input(type='hidden' name='team_id' value=team.id)
                     input(type='hidden' name='id' value=player.id)
                     button.button.is-danger(formaction='/roster/delete' formmethod='post') Remove
-      if user && user.isAdmin
+      if user && (user.isAdmin || is_team_captain)
         div.field.is-grouped
-          p.control
-            a(href='/seasons/' + season.id + '/teams/' + team.id + '/add')
-              button.button.is-primary Add player
+          if user.isAdmin
+            p.control
+              a(href='/seasons/' + season.id + '/teams/' + team.id + '/add')
+                button.button.is-primary Add player
           p.control
             a(href='/seasons/' + season.id + '/teams/' + team.id + '/edit')
               button.button.is-primary Edit team
