@@ -290,14 +290,12 @@ function deletePlayer(db, id) {
   return db.query(query)
 }
 
-function unregisterPlayer(db, seasonId, divisionId, steamId) {
+function unregisterPlayer(db, seasonId, steamId) {
   var query = sql`
   DELETE FROM
     player
   WHERE
     steam_id = ${steamId}
-  AND
-    division_id = ${divisionId}
   AND
     season_id = ${seasonId}
   `

@@ -1,23 +1,23 @@
 extends ../components/base.pug
 
 mixin buttons
-  div.columns
-    div.column
-      div.field.is-grouped
-        div.control
-          a.button.is-primary(href='/seasons/' + season.id + '/divisions/' + division.id + '/draftsheet') Get draft sheet
-        if user && user.isAdmin
+  if user && user.isAdmin
+    div.columns
+      div.column
+        div.field.is-grouped
           div.control
-            a.button(href='/seasons/' + season.id + '/divisions/' + division.id + '/players/create') Add player
-        div.control
-          a.button(disabled) View players
-        div.control
-          a.button(href='/seasons/' + season.id + '/divisions/' + division.id + '/captains') View captains
-        div.control
-          a.button(href='/seasons/' + season.id + '/divisions/' + division.id + '/stand-ins') View stand-ins
+            a.button.is-primary(href='/seasons/' + season.id + '/divisions/' + division.id + '/players/create') Add player
+          div.control
+            a.button(href='/seasons/' + season.id + '/divisions/' + division.id + '/draftsheet') Get draft sheet
+          div.control
+            a.button(disabled) View players
+          div.control
+            a.button(href='/seasons/' + season.id + '/divisions/' + division.id + '/captains') View captains
+          div.control
+            a.button(href='/seasons/' + season.id + '/divisions/' + division.id + '/stand-ins') View stand-ins
 
 block title
-  title #{title} : #{season ? season.name : ''} #{division ? division.name : '' } Players
+  title #{title} : #{season ? season.name : ''} Players
 
 block content
   div.columns
@@ -25,7 +25,7 @@ block content
       h3.title.is-3.has-icon
         span.icon.is-medium
           i.fas.fa-list
-        span #{season ? season.name : ''} #{division ? division.name : '' } Players
+        span #{season ? season.name : ''} Players
   +buttons
   div.columns
     div.column
@@ -42,7 +42,6 @@ block content
               th Will Captain?
               th Captain Approved
             th Statement
-            th Role Preference
             th Vouched?
             th Draftable?
             if user && user.isAdmin
@@ -77,7 +76,6 @@ block content
                     span.icon.has-text-danger.has-icon
                       i.far.fa-lg.fa-times-circle
               td.tiny-text= player.statement
-              td Hello this needs replacing with player preference
               td
                 if player.is_vouched || player.has_played
                   span.icon.has-text-success.has-icon

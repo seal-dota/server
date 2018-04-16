@@ -1,19 +1,22 @@
-const json2csv = require('json2csv').parse
+const json2csv = require('json2csv')
 
 function toCSV(records) {
   if (!records.length) {
     return new Promise('')
   }
 
-  var fields = Object.keys(records[0])
+  var fields = {
+    data: records,
+    fields: Object.keys(records[0])
+  }
 
   return new Promise(function(resolve, reject) {
-    try {
-      var csv = json2csv(records, { fields })
+    json2csv(fields, function(err, csv) {
+      if (err) {
+        reject(err)
+      }
       resolve(csv)
-    } catch(err) {
-      reject(err)
-    }
+    })
   })
 }
 

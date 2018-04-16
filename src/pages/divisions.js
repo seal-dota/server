@@ -17,26 +17,8 @@ function list(templates, division, req, res) {
 function nav(templates, season, division, req, res) {
   var division_id = req.params.division_id
   division.getDivision(division_id).then(division => {
-    return season.getActiveSeason().then(seasons => {
-      var html = templates.division.division({
-        user: req.user,
-        division: division,
-        seasons: seasons
-      })
-
-      res.send(html)
-    })
-  }).catch(err => {
-    console.error(err)
-    res.sendStatus(500)
-  })
-}
-
-function all_seasons(templates, season, division, req, res) {
-  var division_id = req.params.division_id
-  division.getDivision(division_id).then(division => {
     return season.getSeasons().then(seasons => {
-      var html = templates.division.all_seasons({
+      var html = templates.division.division({
         user: req.user,
         division: division,
         seasons: seasons
@@ -95,7 +77,6 @@ function post(division, req, res) {
   var d = req.body
   var id = d.id ? d.id : shortid.generate()
   d.id = id
-  d.active = d.active == 'on' ? true : false
 
   division.saveDivision(d).then(() => {
     res.redirect('/divisions')
@@ -128,10 +109,6 @@ module.exports = (templates, season, division) => {
     nav: {
       route: '/divisions/:division_id',
       handler: nav.bind(null, templates, season, division)
-    },
-    all_seasons: {
-      route: '/divisions/:division_id/all_seasons',
-      handler: all_seasons.bind(null, templates, season, division)
     },
     create: {
       route: '/divisions/create',
