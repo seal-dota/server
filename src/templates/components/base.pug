@@ -6,7 +6,7 @@ html(lang='en')
         block title
           title= title
         link(rel='stylesheet' type='text/css' href='https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css')
-        link(rel='icon' type='image/png' href='/assets/rd2l-lame.png')
+        link(rel='icon' type='image/png' href='/assets/rd2l.png')
         script(defer src='https://use.fontawesome.com/releases/v5.0.9/js/all.js' integrity='sha384-8iPTk2s/jMVj81dnzb/iFR2sdA7u06vHJyyLlAd4snFpCl/SnyUjRrbdJsw1pGIl' crossorigin='anonymous')
         style(type='text/css').
           figure.hide-overflow {
@@ -60,18 +60,6 @@ html(lang='en')
           }
           .icon-box * {
             margin: 0 0.2em;
-          }
-          .rules ol {
-            list-style-position: outside;
-            margin-left: 1.5em;
-          }
-          .rules ol ul {
-            list-style-position: outside;
-            list-style-type: circle;
-            margin-left: 1.5em;
-          }
-          .rules ol ul ul {
-            list-style-type: square;
           }
           @media screen and (max-width: 1007px) {
             .text-icon span {
@@ -157,6 +145,8 @@ html(lang='en')
                       ul
                         li
                           a(href='/rules') League rules
+                        li
+                          a(href='/admins') League admins
                 div.column
                   div.level
                     div.level-item
