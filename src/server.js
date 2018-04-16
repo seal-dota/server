@@ -30,7 +30,9 @@ var admin = require('./repos/admin')(pool)
 var division = require('./repos/division')(pool)
 var migration = require('./repos/migration')(pool)
 var player = require('./repos/player')(pool)
+var player_role = require('./repos/player_role')(pool)
 var profile = require('./repos/profile')(pool)
+var role = require('./repos/role')(pool)
 var season = require('./repos/season')(pool)
 var series = require('./repos/series')(pool)
 var steam_user = require('./repos/steam_user')(pool)
@@ -48,7 +50,7 @@ var credentials = require('./lib/credentials')(config.server)
 var openid = require('./api/openid')(config)
 
 // Page routes
-var indexPages = require('./pages/index')(templates, admin)
+var indexPages = require('./pages/index')(templates, path.join(__dirname, 'assets', 'rules.md'))
 var playerPages = require('./pages/players')(templates, season, division, player, steam_user)
 var profilePages = require('./pages/profile')(templates, steam_user, profile, team_player, vouch, steamId)
 var seasonPages = require('./pages/seasons')(templates, season)
@@ -56,8 +58,9 @@ var divisionPages = require('./pages/divisions')(templates, season, division)
 var seriesPages = require('./pages/series')(templates, season, team, series, pairings)
 var teamPages = require('./pages/teams')(templates, season, team)
 var registrationPages = require('./pages/registration')(
-  templates, season, division, steam_user, team_player, player, mmr, profile)
+  templates, season, division, steam_user, team_player, player, role, player_role, mmr, profile)
 var rosterPages = require('./pages/roster')(templates, season, team, team_player, series)
+var rolePages = require('./pages/roles')(templates, role)
 
 // API routes
 // none currently
@@ -123,7 +126,6 @@ app.get('/auth/steam/return',
 app.get('/logout', openid.logout)
 
 app.get(indexPages.home.route, indexPages.home.handler)
-app.get(indexPages.admins.route, indexPages.admins.handler)
 app.get(indexPages.complaint.route, indexPages.complaint.handler)
 app.get(indexPages.rules.route, indexPages.rules.handler)
 
@@ -138,6 +140,7 @@ app.get(divisionPages.list.route, divisionPages.list.handler)
 app.get(divisionPages.create.route, divisionPages.create.handler)
 app.get(divisionPages.edit.route, divisionPages.edit.handler)
 app.get(divisionPages.nav.route, divisionPages.nav.handler)
+app.get(divisionPages.all_seasons.route, divisionPages.all_seasons.handler)
 
 app.post(divisionPages.post.route, divisionPages.post.handler)
 app.post(divisionPages.remove.route, divisionPages.remove.handler)
@@ -184,9 +187,18 @@ app.post(profilePages.post.route, profilePages.post.handler)
 
 app.get(registrationPages.view.route, registrationPages.view.handler)
 app.get(registrationPages.shortcut.route, registrationPages.shortcut.handler)
+app.get(registrationPages.directory.route, registrationPages.directory.handler)
+app.get(registrationPages.directoryShortcut.route, registrationPages.directoryShortcut.handler)
 
 app.post(registrationPages.post.route, registrationPages.post.handler)
 app.post(registrationPages.unregister.route, registrationPages.unregister.handler)
+
+app.get(rolePages.list.route, rolePages.list.handler)
+app.get(rolePages.create.route, rolePages.create.handler)
+app.get(rolePages.edit.route, rolePages.edit.handler)
+
+app.post(rolePages.post.route, rolePages.post.handler)
+app.post(rolePages.remove.route, rolePages.remove.handler)
 
 migration.migrateIfNeeded(
   migration.getMigrations(path.join(__dirname, 'migrations')))

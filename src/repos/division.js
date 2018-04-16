@@ -1,15 +1,30 @@
 var sql = require('pg-sql').sql
 
-function getDivisions(db) {
+function getDivisions(db, criteria) {
   var select = sql`
   SELECT
-    id,
-    name
+    division.id,
+    division.name,
+    division.active,
+    division.discord_url,
+    division.start_time
   FROM
     division
+  WHERE
+    1 = 1
+  `
+  if (criteria) {
+    if (criteria.active !== undefined) {
+      select = sql.join([select, sql`
+      AND
+        division.active = ${criteria.active}
+      `])
+    }
+  }
+  select = sql.join([select, sql`
   ORDER BY
     name ASC
-  `
+  `])
   return db.query(select).then(result => {
     return result.rows
   })
@@ -18,12 +33,15 @@ function getDivisions(db) {
 function getDivision(db, id) {
   var select = sql`
   SELECT
-    id,
-    name
+    division.id,
+    division.name,
+    division.active,
+    division.discord_url,
+    division.start_time
   FROM
     division
   WHERE
-    id = ${id}
+    division.id = ${id}
   `
   return db.query(select).then(result => {
     return result.rows[0]
@@ -35,16 +53,29 @@ function saveDivision(db, division) {
   INSERT INTO
     division(
       id,
-      name
+      name,
+      active,
+      discord_url,
+      start_time
     ) VALUES (
       ${division.id},
-      ${division.name}
+      ${division.name},
+      ${division.active},
+      ${division.discord_url},
+      ${division.start_time}
     ) ON CONFLICT (
       id
-    ) DO UPDATE SET
-      name
-    =
-      ${division.name}
+    ) DO UPDATE SET (
+      name,
+      active,
+      discord_url,
+      start_time
+    ) = (
+      ${division.name},
+      ${division.active},
+      ${division.discord_url},
+      ${division.start_time}
+    )
   `
   return db.query(upsert)
 }

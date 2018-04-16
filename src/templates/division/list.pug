@@ -14,15 +14,20 @@ block content
         thead
           tr
             th Name
+            th Start Time
             th View
+            th Register
             if user && user.isAdmin
               th Edit
         tbody
           each division in divisions
             tr
               td= division.name
+              td= division.start_time
               td
                 a(href='/divisions/' + division.id) view
+              td
+                a(href='/divisions/' + division.id + '/register') register
               if user && user.isAdmin
                 td
                   a(href='/divisions/' + division.id + '/edit') edit
